@@ -170,6 +170,7 @@ class ConfigurationClassParser {
 		for (BeanDefinitionHolder holder : configCandidates) {
 			BeanDefinition bd = holder.getBeanDefinition();
 			try {
+				// 解析
 				if (bd instanceof AnnotatedBeanDefinition) {
 					parse(((AnnotatedBeanDefinition) bd).getMetadata(), holder.getBeanName());
 				}
@@ -246,6 +247,7 @@ class ConfigurationClassParser {
 		// Recursively process the configuration class and its superclass hierarchy.
 		SourceClass sourceClass = asSourceClass(configClass, filter);
 		do {
+			// 真正去解析
 			sourceClass = doProcessConfigurationClass(configClass, sourceClass, filter);
 		}
 		while (sourceClass != null);
@@ -266,11 +268,13 @@ class ConfigurationClassParser {
 			ConfigurationClass configClass, SourceClass sourceClass, Predicate<String> filter)
 			throws IOException {
 
+		// 解析 @Component
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
 			// Recursively process any member (nested) classes first
 			processMemberClasses(configClass, sourceClass, filter);
 		}
 
+		// 解析 @PropertySource
 		// Process any @PropertySource annotations
 		for (AnnotationAttributes propertySource : AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), PropertySources.class,
@@ -284,6 +288,7 @@ class ConfigurationClassParser {
 			}
 		}
 
+		// 解析 @ComponentScan
 		// Process any @ComponentScan annotations
 		Set<AnnotationAttributes> componentScans = AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), ComponentScans.class, ComponentScan.class);
@@ -306,9 +311,11 @@ class ConfigurationClassParser {
 			}
 		}
 
+		// 解析 @Import
 		// Process any @Import annotations
 		processImports(configClass, sourceClass, getImports(sourceClass), filter, true);
 
+		// 解析 @ImportResource
 		// Process any @ImportResource annotations
 		AnnotationAttributes importResource =
 				AnnotationConfigUtils.attributesFor(sourceClass.getMetadata(), ImportResource.class);
@@ -321,6 +328,7 @@ class ConfigurationClassParser {
 			}
 		}
 
+		// 解析 @ImportResource
 		// Process individual @Bean methods
 		Set<MethodMetadata> beanMethods = retrieveBeanMethodMetadata(sourceClass);
 		for (MethodMetadata methodMetadata : beanMethods) {

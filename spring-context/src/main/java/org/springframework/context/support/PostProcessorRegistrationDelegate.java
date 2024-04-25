@@ -101,6 +101,8 @@ final class PostProcessorRegistrationDelegate {
 			List<BeanDefinitionRegistryPostProcessor> currentRegistryProcessors = new ArrayList<>();
 
 			// 首先：调用实现 PriorityOrdered 的BeanDefinitionRegistryPostProcessors
+			//         此处会获取底层 org.springframework.context.annotation.internalConfigurationAnnotationProcessor
+			//
 			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered.
 			String[] postProcessorNames =
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
