@@ -1,8 +1,9 @@
 package io.github.linweiwang.bean;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 
-public class Cat {
+public class Cat implements InitializingBean {
 
 	public Cat() {
 		System.out.println("Cat constructor");
@@ -20,4 +21,8 @@ public class Cat {
 		return name;
 	}
 
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		System.out.println("Cat InitializingBean afterPropertiesSet");
+	}
 }
